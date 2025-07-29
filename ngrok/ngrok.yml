@@ -1,0 +1,8 @@
+version: 2
+authtoken: ${NGROK_AUTHTOKEN}
+tunnels:
+  http80:
+    proto: http
+    addr: nginx:80
+    region: sa
+    hostname: ${NGROK_HOSTNAME}

@@ -1,0 +1,32 @@
+services:
+  flask_demo:
+    build: ./flask_demo
+    container_name: flask_demo
+    restart: always
+    ports:
+      - "5000:5000" 
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /opt/opi_server/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /opt/opi_server/www:/opt/opi_server/www:ro
+    depends_on:
+      - flask_demo
+      
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok_http
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    # Se tiver hostname reservado:
+    command: http --region sa --hostname ${NGROK_HOSTNAME} nginx:80
+    # Sem hostname reservado, deixe só: command: http --region sa nginx:80
+    depends_on:
+      - nginx
+    ports:
+      - "4040:4040"
+    restart: unless-stopped
