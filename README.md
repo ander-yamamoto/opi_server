@@ -75,6 +75,44 @@ sudo nmcli device wifi connect "SSID_NAME" password "PASSWORD" ifname wlan0
 
 ---
 
+
+## 🛡️ Enable Hardware Watchdog on Orange Pi
+The watchdog helps automatically reboot the system in case of crashes or lost connectivity.
+
+### Install and configure
+
+```bash
+sudo apt update
+sudo apt install watchdog
+sudo nano /etc/watchdog.conf
+```
+Uncomment or edit this lines:
+```
+#---The hardware timer settings
+watchdog-device         = /dev/watchdog
+watchdog-timeout        = 10
+
+#---Other system settings
+realtime                = yes
+priority                = 1
+
+#---Typical tests
+ping                    = 8.8.8.8
+ping                    = YOUR_ROUTER_IP_HERE
+ping-count              = 3
+interface               = eth0
+```
+    ⚠️ If you're using Wi-Fi instead of Ethernet, change interface = eth0 to interface = wlan0.
+
+### Enable and start the service
+```bash
+sudo systemctl enable watchdog
+sudo systemctl start watchdog
+sudo systemctl status watchdog
+```
+---
+
+
 ## 🐳 Install Docker + UFW
 
 ### Docker:
